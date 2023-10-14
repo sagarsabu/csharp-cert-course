@@ -238,7 +238,181 @@ void PeriodsSubstringExample()
             Console.WriteLine(separatedStr.Trim());
         }
     }
+}
 
+void MinMaxValues()
+{
+    Console.WriteLine("Signed integral types:");
+
+    Console.WriteLine($"sbyte   : {sbyte.MinValue} to {sbyte.MaxValue}");
+    Console.WriteLine($"short   : {short.MinValue} to {short.MaxValue}");
+    Console.WriteLine($"int     : {int.MinValue} to {int.MaxValue}");
+    Console.WriteLine($"long    : {long.MinValue} to {long.MaxValue}");
+
+    Console.WriteLine();
+    Console.WriteLine("Unsigned integral types:");
+
+    Console.WriteLine($"byte   : {byte.MinValue} to {byte.MaxValue}");
+    Console.WriteLine($"ushort : {ushort.MinValue} to {ushort.MaxValue}");
+    Console.WriteLine($"uint   : {uint.MinValue} to {uint.MaxValue}");
+    Console.WriteLine($"ulong  : {ulong.MinValue} to {ulong.MaxValue}");
+
+    Console.WriteLine();
+    Console.WriteLine("Floating point types:");
+    Console.WriteLine($"float  : {float.MinValue} to {float.MaxValue} (with ~6-9 digits of precision)");
+    Console.WriteLine($"double : {double.MinValue} to {double.MaxValue} (with ~15-17 digits of precision)");
+    Console.WriteLine($"decimal: {decimal.MinValue} to {decimal.MaxValue} (with 28-29 digits of precision)");
+}
+
+void ConvertExample()
+{
+    string[] values = { "12.3", "45", "ABC", "11", "DEF" };
+    string msg = "";
+    double num = 0.0D;
+    foreach (var val in values)
+    {
+        if (double.TryParse(val, out double numVal))
+        {
+            num += numVal;
+        }
+        else
+        {
+            msg += val;
+        }
+    }
+    Console.WriteLine($"Msg: {msg} Total: {num}");
+}
+
+void ReverseWordsInSentence()
+{
+    string pangram = "The quick brown fox jumps over the lazy dog";
+    string[] pangramArray = pangram.Split(" ");
+    for (uint idx = 0; idx < pangramArray.Length; ++idx)
+    {
+        pangramArray[idx] = new string(pangramArray[idx].Reverse().ToArray());
+    }
+    pangram = string.Join(' ', pangramArray);
+    Console.WriteLine(pangram);
+}
+
+void SortedOrdersExample()
+{
+    string orderStream = "B123,C234,A345,C15,B177,G3003,C235,B179";
+    string[] sortedOrderStream = orderStream.Split(',');
+    Array.Sort(sortedOrderStream);
+    foreach (var item in sortedOrderStream)
+    {
+        if (item.Length == 4)
+        {
+            Console.WriteLine(item);
+        }
+        else
+        {
+            Console.WriteLine($"{item} - Error");
+        }
+    }
+}
+
+void MarketingLetterExample()
+{
+    string customerName = "Ms. Barros";
+
+    string currentProduct = "Magic Yield";
+    int currentShares = 2975000;
+    decimal currentReturn = 0.1275m;
+    decimal currentProfit = 55000000.0m;
+
+    string newProduct = "Glorious Future";
+    decimal newReturn = 0.13125m;
+    decimal newProfit = 63000000.0m;
+
+    string comparisonMessage =
+$@"Dear {customerName},
+As a customer of our {currentProduct} offering we are excited to tell you about a new financial product that would dramatically increase your return.
+
+Currently, you own {currentShares:N2} shares at a return of {currentReturn:P2}.
+
+Our new product, {newProduct} offers a return of {newReturn:P2}.  Given your current volume, your potential profit would be {newProfit:C2}.
+
+Here's a quick comparison:
+
+{currentProduct,-20}  {currentReturn:P2}  {currentProfit:C2}
+{newProduct,-20}  {newReturn:P2}  {newProfit:C2}";
+
+    Console.WriteLine(comparisonMessage);
+}
+
+void AllParenSubstrings()
+{
+    const string message = "(What if) there are (more than) one (set of parentheses)?";
+    int seekIdx = 0;
+    int parenStartIdx;
+    int parentEndIdx;
+    do
+    {
+        parenStartIdx = message.IndexOf('(', seekIdx);
+        parentEndIdx = message.IndexOf(')', seekIdx);
+        if (parenStartIdx != -1 && parentEndIdx != -1)
+        {
+            seekIdx = parentEndIdx + 1;
+            var substringLength = parentEndIdx - 1 - parenStartIdx;
+            Console.WriteLine(message.Substring(parenStartIdx + 1, substringLength));
+        }
+    } while (parenStartIdx != -1 && parentEndIdx != -1);
+}
+
+void MultipleSubstrCaptures()
+{
+    const string message = "(What if) I have [different symbols] but every {open symbol} needs a [matching closing symbol]?";
+    char[] openSymbols = { '[', '{', '(' };
+    char[] closeSymbols = { ']', '}', ')' };
+    int seekIdx = 0;
+    int parenStartIdx;
+    int parentEndIdx;
+
+    while (true)
+    {
+        parenStartIdx = message.IndexOfAny(openSymbols, seekIdx);
+        parentEndIdx = message.IndexOfAny(closeSymbols, seekIdx);
+
+        if (parenStartIdx == -1 || parentEndIdx == -1)
+            break;
+
+        bool matchedCapture = (message[parenStartIdx], message[parentEndIdx]) switch
+        {
+            ('(', ')') => true,
+            ('{', '}') => true,
+            ('[', ']') => true,
+            _ => false,
+        };
+
+        if (!matchedCapture)
+            break;
+
+        seekIdx = parentEndIdx + 1;
+        var substringLength = parentEndIdx - 1 - parenStartIdx;
+        Console.WriteLine(message.Substring(parenStartIdx + 1, substringLength));
+    };
+
+}
+
+void HTMLSubstrExample()
+{
+    const string input = "<div><h2>Widgets &trade;</h2><span>5000</span></div>";
+
+    const string spanStartTag = "<span>";
+    const string spanEndTag = "</span>";
+
+    var spanStartIdx = input.IndexOf(spanStartTag);
+    var spanEndIdx = input.IndexOf(spanEndTag);
+    var quantityStartIdx = spanStartIdx + spanStartTag.Length;
+    var quantityLen = spanEndIdx - quantityStartIdx;
+
+    string quantity = input.Substring(quantityStartIdx, quantityLen);
+    string output = input.Replace("<div>", "").Replace("</div>", "").Replace("&trade;", "&reg;");
+
+    Console.WriteLine(quantity);
+    Console.WriteLine(output);
 }
 
 void RunTest()
@@ -250,7 +424,15 @@ void RunTest()
     // FizzBuzzExample();
     // RPGExample();
     // Valid5To10InputExample();
-    PeriodsSubstringExample();
+    // MinMaxValues();
+    // PeriodsSubstringExample();
+    // ConvertExample();
+    // ReverseWordsInSentence();
+    // SortedOrdersExample();
+    // MarketingLetterExample();
+    AllParenSubstrings();
+    MultipleSubstrCaptures();
+    HTMLSubstrExample();
 }
 
 RunTest();
